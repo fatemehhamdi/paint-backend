@@ -1,5 +1,6 @@
 package com.paintapp.paintbackend.controller;
 
+import com.paintapp.paintbackend.model.DTO.SavePaintingRequest;
 import com.paintapp.paintbackend.model.Painting;
 import com.paintapp.paintbackend.model.User;
 import com.paintapp.paintbackend.service.PaintingService;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/paintings")
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class PaintingController {
 
     @Autowired
@@ -23,8 +24,16 @@ public class PaintingController {
     @Autowired
     private UserService userService;
 
+//    // Test endpoint (demonstrates correct body mapping)
+//    @PostMapping("/test")
+//    public ResponseEntity<?> test(@RequestBody SavePaintingRequest request){
+//        return ResponseEntity.ok("salasdf");
+//    }
+//
+//    // POST /api/paintings
+//    // POST /api/paintings
     @PostMapping
-    public ResponseEntity<?> savePainting(@RequestBody Map<String, String> request, Authentication auth) {
+    public ResponseEntity<?> savePainting(@RequestBody SavePaintingRequest request, Authentication auth) {
         try {
             String username = auth.getName();
             Optional<User> userOpt = userService.findByUsername(username);
@@ -34,8 +43,8 @@ public class PaintingController {
             }
 
             User user = userOpt.get();
-            String title = request.get("title");
-            String shapes = request.get("shapes");
+            String title = request.getTitle();
+            String shapes = request.getCanvasData(); // Use canvasData here!
 
             Painting painting = paintingService.saveOrUpdatePainting(user, title, shapes);
 
@@ -49,6 +58,8 @@ public class PaintingController {
         }
     }
 
+
+    // GET /api/paintings
     @GetMapping
     public ResponseEntity<?> getPainting(Authentication auth) {
         try {
