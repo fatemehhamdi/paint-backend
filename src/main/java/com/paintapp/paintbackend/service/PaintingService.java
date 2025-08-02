@@ -14,7 +14,7 @@ public class PaintingService {
     @Autowired
     private PaintingRepository paintingRepository;
 
-    public Painting saveOrUpdatePainting(User user, String title, String shapes) {
+    public Painting saveOrUpdatePainting(User user, String title, String canvasData) {
         // Check if user already has a painting
         Optional<Painting> existingPainting = paintingRepository.findByUser(user);
 
@@ -23,12 +23,12 @@ public class PaintingService {
             // Update existing painting
             painting = existingPainting.get();
             painting.setTitle(title);
-            painting.setShapes(shapes);
+            painting.setCanvas_data(canvasData);
         } else {
             // Create new painting
             painting = new Painting();
             painting.setTitle(title);
-            painting.setShapes(shapes);
+            painting.setCanvas_data(canvasData);
             painting.setUser(user);
         }
 

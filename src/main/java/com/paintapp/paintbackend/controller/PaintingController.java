@@ -1,5 +1,8 @@
 package com.paintapp.paintbackend.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paintapp.paintbackend.model.DTO.LoadPaintingResponse;
 import com.paintapp.paintbackend.model.DTO.SavePaintingRequest;
 import com.paintapp.paintbackend.model.Painting;
 import com.paintapp.paintbackend.model.User;
@@ -10,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,9 +48,9 @@ public class PaintingController {
 
             User user = userOpt.get();
             String title = request.getTitle();
-            String shapes = request.getCanvasData(); // Use canvasData here!
+            String canvasData = request.getCanvasData(); // Use canvasData here!
 
-            Painting painting = paintingService.saveOrUpdatePainting(user, title, shapes);
+            Painting painting = paintingService.saveOrUpdatePainting(user, title, canvasData);
 
             return ResponseEntity.ok(Map.of(
                     "id", painting.getId(),
@@ -60,6 +64,7 @@ public class PaintingController {
 
 
     // GET /api/paintings
+
     @GetMapping
     public ResponseEntity<?> getPainting(Authentication auth) {
         try {
@@ -78,13 +83,12 @@ public class PaintingController {
             }
 
             Painting painting = paintingOpt.get();
-            return ResponseEntity.ok(Map.of(
-                    "id", painting.getId(),
-                    "title", painting.getTitle(),
-                    "shapes", painting.getShapes(),
-                    "createdAt", painting.getCreatedAt(),
-                    "updatedAt", painting.getUpdatedAt()
-            ));
+
+            LoadPaintingResponse loadPaintingResponse = new LoadPaintingResponse();
+            loadPaintingResponse.setTitle(painting.getTitle());
+            loadPaintingResponse.setCanvasData(painting.getCanvas_data());
+
+            return ResponseEntity.ok(loadPaintingResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
