@@ -23,13 +23,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("hiiiiiiiiiiiiiiiiiii");
+//        System.out.println("hiiiiiiiiiiiiiiiiiii");
         String token = getTokenFromRequest(request);
         System.out.println("JWT Token: " + token);
         if (token != null && jwtUtil.validateToken(token)) {
-            System.out.println("JWT Token: " + token);
+//            System.out.println("JWT Token: " + token);
             String username = jwtUtil.getUsernameFromToken(token);
-            System.out.println("username: " + username);
+//            System.out.println("username: " + username);
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
             SecurityContextHolder.getContext().setAuthentication(authentication);
